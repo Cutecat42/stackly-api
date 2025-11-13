@@ -1,6 +1,11 @@
 package com.example.stackly_api;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
@@ -30,19 +35,14 @@ public class Document {
     )
     private Stack stackName;
 
-    @Column(
-            name = "first_name"
-    )
-    private String firstName;
-
-    @Column(
-            name = "invoice_number"
-    )
-    private Integer invoiceNumber;
+    @Type(type = "jsonb")
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Object> customData = new HashMap<>();
 
     public Document() {};
 
-    public Document(Stack stackName, String firstName) {
-
+    public Document(Stack stackName, HashMap<String, Object> customData) {
+    this.stackName = stackName;
+    this.customData = customData;
     }
 }
