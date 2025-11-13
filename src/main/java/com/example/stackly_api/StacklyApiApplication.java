@@ -8,20 +8,24 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class StacklyApiApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(StacklyApiApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(StacklyApiApplication.class, args);
+    }
 
     @Bean
-    public CommandLineRunner commandLineRunner(SpaceRepository SpaceRepository) {
+    public CommandLineRunner commandLineRunner(SpaceRepository spaceRepository, StackRepository stackRepository) {
         return args -> {
-            Space joeContract = new Space("HR", "Employee Contracts",
-                    "Joe");
-            SpaceRepository.save(joeContract);
+            // Create and save a Space
+            Space space = new Space("HR");
+            if (!spaceRepository.existsById("HR")) {
+                spaceRepository.save(space);
+            }
 
-            Space invoiceDocument = new Space("HR", "Recruitment",
-                    "ABC Company", 12345);
-            SpaceRepository.save(invoiceDocument);
+            // Create and save a Stack in that Space
+            Stack stack = new Stack(space,"Contracts");
+            stackRepository.save(stack);
+
+            System.out.println("✅ Space and Stack saved successfully!");
         };
     }
 }
