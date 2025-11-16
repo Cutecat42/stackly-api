@@ -1,5 +1,7 @@
 package com.example.stackly_api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -33,16 +35,32 @@ public class Document {
             name = "stack_name",
             nullable = false
     )
-    private Stack stackName;
+    private Stack stack;
 
     @Type(type = "jsonb")
-    @Column(columnDefinition = "jsonb")
+    @Column(
+            columnDefinition = "jsonb",
+            nullable = false)
     private Map<String, Object> customData = new HashMap<>();
 
     public Document() {};
 
-    public Document(Stack stackName, HashMap<String, Object> customData) {
-    this.stackName = stackName;
+    public Document(Stack stack, HashMap<String, Object> customData) {
+    this.stack = stack;
     this.customData = customData;
+    }
+
+    public String getStackName() {
+        return stack.getStackName();
+    }
+
+    public String getCustomData() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(customData);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

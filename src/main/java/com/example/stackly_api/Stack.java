@@ -1,8 +1,5 @@
 package com.example.stackly_api;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -11,9 +8,12 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
-@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
+@TypeDef(
+        name = "jsonb",
+        typeClass = JsonBinaryType.class)
 public class Stack {
     @Id
     @Column(
@@ -28,22 +28,23 @@ public class Stack {
             name = "space_name",
             nullable = false
     )
-    private Space spaceName;
+    private Space space;
 
-    @OneToMany(mappedBy = "stackName", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "stack", cascade = CascadeType.ALL)
     private List<Document> documents = new ArrayList<>();
 
     @Type(type = "jsonb")
     @Column(
             name = "field_schema",
-            columnDefinition = "jsonb"
+            columnDefinition = "jsonb",
+            nullable = false
     )
     private HashMap<String, Object> fieldSchema = new HashMap<>();
 
     public Stack() {}
 
-    public Stack(Space spaceName, String stackName, HashMap<String, Object> fieldSchema) {
-        this.spaceName = spaceName;
+    public Stack(Space space, String stackName, HashMap<String, Object> fieldSchema) {
+        this.space = space;
         this.stackName = stackName;
         this.fieldSchema = fieldSchema;
     }
@@ -52,19 +53,17 @@ public class Stack {
         return stackName;
     }
 
-    public String getFieldSchema() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.writeValueAsString(fieldSchema);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+    public String getSpaceName() {
+        return space.getSpaceName();
+    }
 
+    public Map<String, Object> getFieldSchema() {
+        return fieldSchema;
     }
 
     @Override
     public String toString() {
         return "Stack: " + stackName +
-                "Space: " + spaceName;
+                "Space: " + space;
     }
 }

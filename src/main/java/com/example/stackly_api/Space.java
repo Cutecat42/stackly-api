@@ -14,13 +14,17 @@ public class Space {
     )
     private String spaceName;
 
-    @OneToMany(mappedBy = "spaceName", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "space", cascade = CascadeType.ALL)
     private List<Stack> stacks = new ArrayList<>();
 
     public Space() {}
 
     public Space(String spaceName) {
         this.spaceName = spaceName;
+    }
+
+    public String getSpaceName() {
+        return this.spaceName;
     }
 
     @Override
