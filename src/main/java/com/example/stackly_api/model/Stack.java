@@ -1,4 +1,4 @@
-package com.example.stackly_api;
+package com.example.stackly_api.model;
 
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import org.hibernate.annotations.Type;

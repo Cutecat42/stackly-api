@@ -1,6 +1,14 @@
 package com.example.stackly_api.controller;
 
-import com.example.stackly_api.*;
+import com.example.stackly_api.dto.DocumentRequest;
+import com.example.stackly_api.dto.SpaceRequest;
+import com.example.stackly_api.dto.StackRequest;
+import com.example.stackly_api.model.Document;
+import com.example.stackly_api.model.Space;
+import com.example.stackly_api.model.Stack;
+import com.example.stackly_api.service.DocumentService;
+import com.example.stackly_api.service.SpaceService;
+import com.example.stackly_api.service.StackService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,82 +19,35 @@ import java.util.Map;
 
 @RestController
 public class SpaceController {
-    private final SpaceRepository spaceRepository;
-    private final StackRepository stackRepository;
-    private final DocumentRepository documentRepository;
+    private final SpaceService spaceService;
+    private final StackService stackService;
+    private final DocumentService documentService;
 
-    public SpaceController(SpaceRepository spaceRepository,
-                           StackRepository stackRepository,
-                           DocumentRepository documentRepository) {
-        this.spaceRepository = spaceRepository;
-        this.stackRepository = stackRepository;
-        this.documentRepository = documentRepository;
+    public SpaceController(SpaceService spaceService,
+                           StackService stackService,
+                           DocumentService documentService) {
+        this.spaceService = spaceService;
+        this.stackService = stackService;
+        this.documentService = documentService;
     }
 
     @PostMapping("/space")
     public ResponseEntity<Space> createSpace(@RequestBody SpaceRequest spaceRequest) {
-
-        if (spaceRequest.spaceName == null || spaceRequest.spaceName.isBlank()) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        if (spaceRepository.existsById(spaceRequest.spaceName)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-
-        Space space = new Space(spaceRequest.spaceName);
-        Space saved = spaceRepository.save(space);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+            Space savedSpace = spaceService.createSpace(spaceRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedSpace);
     }
 
     @PostMapping("/stack")
     public ResponseEntity<Stack> createStack(@RequestBody StackRequest stackRequest) {
-
-        if ((stackRequest.spaceName == null || stackRequest.spaceName.isBlank()) ||
-                (stackRequest.stackName == null || stackRequest.stackName.isBlank()) ||
-                (stackRequest.fieldSchema == null) || (stackRequest.fieldSchema.isEmpty())) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        if (stackRepository.existsById(stackRequest.stackName)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-
-        if (!spaceRepository.existsById(stackRequest.spaceName)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
-        Space space = spaceRepository.findById(stackRequest.spaceName).get();
-        Stack stack = new Stack(space, stackRequest.stackName, stackRequest.fieldSchema);
-        Stack saved = stackRepository.save(stack);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        Stack savedStack = stackService.createStack(stackRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedStack);
     }
 
     @PostMapping("/document")
     public ResponseEntity<?> createDocument(@RequestBody DocumentRequest documentRequest) {
 
-        if ((documentRequest.stackName == null || documentRequest.stackName.isBlank()) ||
-                (documentRequest.customData == null) || (documentRequest.customData.isEmpty())) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        if (!stackRepository.existsById(documentRequest.stackName)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
-        Stack stack = stackRepository.findById(documentRequest.stackName).get();
-        Map<String, Object> allowed = stack.getFieldSchema();
-
-        for (String key : documentRequest.customData.keySet()) {
-            if (!allowed.containsKey(key)) {
-                String message = "Field '" + key + "' not allowed for stack " + stack.getStackName();
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
-            }
-        }
-
-        Document document = new Document(stack, documentRequest.customData);
-        Document saved = documentRepository.save(document);
-        return new ResponseEntity<>(saved, HttpStatus.CREATED);
+        Document savedDocument = documentService.createDocument(documentRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedDocument);
     }
 
 }

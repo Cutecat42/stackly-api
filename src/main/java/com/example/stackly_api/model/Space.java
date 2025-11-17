@@ -1,4 +1,4 @@
-package com.example.stackly_api;
+package com.example.stackly_api.model;
 
 import javax.persistence.*;
 import java.util.ArrayList;
