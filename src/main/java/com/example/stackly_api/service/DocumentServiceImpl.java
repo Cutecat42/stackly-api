@@ -22,25 +22,29 @@ public class DocumentServiceImpl implements DocumentService{
 
     @Override
     public Document createDocument(DocumentRequest documentRequest) {
-        if ((documentRequest.stackName == null || documentRequest.stackName.isBlank()) ||
-                (documentRequest.customData == null) || (documentRequest.customData.isEmpty())) {
+        if (documentRequest == null) {
+            throw new IllegalArgumentException("Document request cannot be null.");
+        }
+
+        if (documentRequest.getStackName() == null || documentRequest.getStackName().isBlank() ||
+                documentRequest.getCustomData() == null || documentRequest.getCustomData().isEmpty()) {
             throw new IllegalArgumentException("Stack/CustomRepository Data Fields cannot be blank.");
         }
 
-        Stack stack = stackRepository.findById(documentRequest.stackName).
+        Stack stack = stackRepository.findById(documentRequest.getStackName()).
                 orElseThrow(() -> new StackNotFoundException("Stack not found with name: "
-                + documentRequest.stackName));
+                + documentRequest.getStackName()));
 
         Map<String, Object> allowed = stack.getFieldSchema();
 
-        for (String key : documentRequest.customData.keySet()) {
+        for (String key : documentRequest.getCustomData().keySet()) {
             if (!allowed.containsKey(key)) {
                 String message = "Field '" + key + "' not allowed for stack " + stack.getStackName();
                 throw new IllegalArgumentException(message);
             }
         }
 
-        Document document = new Document(stack, documentRequest.customData);
+        Document document = new Document(stack, documentRequest.getCustomData());
         return documentRepository.save(document);
     }
 }

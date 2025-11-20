@@ -21,21 +21,30 @@ public class StackServiceImpl implements StackService{
 
     @Override
     public Stack createStack(StackRequest stackRequest) {
-        if ((stackRequest.spaceName == null || stackRequest.spaceName.isBlank()) ||
-                (stackRequest.stackName == null || stackRequest.stackName.isBlank()) ||
-                (stackRequest.fieldSchema == null) || (stackRequest.fieldSchema.isEmpty())) {
+        if (stackRequest == null) {
+            throw new IllegalArgumentException("Stack request cannot be null.");
+        }
+
+        if (stackRequest.getSpaceName() == null ||
+                stackRequest.getSpaceName().isBlank() ||
+
+                stackRequest.getStackName() == null ||
+                stackRequest.getStackName().isBlank() ||
+
+                stackRequest.getFieldSchema() == null ||
+                stackRequest.getFieldSchema().isEmpty()) {
             throw new IllegalArgumentException("Space/Stack/FieldSchema cannot be blank.");
         }
 
-        if (stackRepository.existsById(stackRequest.stackName)) {
+        if (stackRepository.existsById(stackRequest.getStackName())) {
             throw new StackNameConflictException("Stack already found with name: "
-                    + stackRequest.spaceName);
+                    + stackRequest.getStackName());
         }
 
-        Space space = spaceRepository.findById(stackRequest.spaceName).
+        Space space = spaceRepository.findById(stackRequest.getSpaceName()).
                 orElseThrow(() -> new SpaceNotFoundException("Space not found with name: "
-                        + stackRequest.spaceName));
-        Stack stack = new Stack(space, stackRequest.stackName, stackRequest.fieldSchema);
+                        + stackRequest.getSpaceName()));
+        Stack stack = new Stack(space, stackRequest.getStackName(), stackRequest.getFieldSchema());
         return stackRepository.save(stack);
     }
 }

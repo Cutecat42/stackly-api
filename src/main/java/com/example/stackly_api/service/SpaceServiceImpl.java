@@ -17,16 +17,20 @@ public class SpaceServiceImpl implements SpaceService {
     @Override
     public Space createSpace(SpaceRequest spaceRequest) {
 
-        if (spaceRequest.spaceName == null || spaceRequest.spaceName.isBlank()) {
+        if (spaceRequest == null) {
+            throw new IllegalArgumentException("Space request cannot be null.");
+        }
+
+        if (spaceRequest.getSpaceName().isBlank()) {
             throw new IllegalArgumentException("Space name cannot be blank.");
         }
 
-        if (spaceRepository.existsById(spaceRequest.spaceName)) {
+        if (spaceRepository.existsById(spaceRequest.getSpaceName())) {
             throw new SpaceNameConflictException("Space already found with name: "
-                    + spaceRequest.spaceName);
+                    + spaceRequest.getSpaceName());
         }
 
-        Space space = new Space(spaceRequest.spaceName);
+        Space space = new Space(spaceRequest.getSpaceName());
         return spaceRepository.save(space);
     }
 }
