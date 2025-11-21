@@ -6,6 +6,8 @@ public class DocumentRequest {
     private String stackName;
     private HashMap<String,Object> customData;
 
+    public DocumentRequest() {};
+
     public DocumentRequest(String stackName, HashMap<String,Object> customData) {
         this.stackName = stackName;
         this.customData = customData;

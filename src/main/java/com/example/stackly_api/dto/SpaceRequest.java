@@ -3,6 +3,8 @@ package com.example.stackly_api.dto;
 public class SpaceRequest {
     private String spaceName;
 
+    public SpaceRequest() {};
+
     public SpaceRequest(String spaceName) {
         this.spaceName = spaceName;
     }

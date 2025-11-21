@@ -2,9 +2,12 @@ package com.example.stackly_api.service;
 
 import com.example.stackly_api.dto.SpaceRequest;
 import com.example.stackly_api.exception.SpaceNameConflictException;
+import com.example.stackly_api.exception.SpaceNotFoundException;
 import com.example.stackly_api.model.Space;
 import com.example.stackly_api.repository.SpaceRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class SpaceServiceImpl implements SpaceService {
@@ -21,8 +24,8 @@ public class SpaceServiceImpl implements SpaceService {
             throw new IllegalArgumentException("Space request cannot be null.");
         }
 
-        if (spaceRequest.getSpaceName().isBlank()) {
-            throw new IllegalArgumentException("Space name cannot be blank.");
+        if (spaceRequest.getSpaceName() == null || spaceRequest.getSpaceName().isBlank()) {
+            throw new IllegalArgumentException("Space name cannot be null or blank.");
         }
 
         if (spaceRepository.existsById(spaceRequest.getSpaceName())) {
@@ -32,5 +35,16 @@ public class SpaceServiceImpl implements SpaceService {
 
         Space space = new Space(spaceRequest.getSpaceName());
         return spaceRepository.save(space);
+    }
+
+    @Override
+    public List<Space> getAllSpaces() {
+        return spaceRepository.findAll();
+    }
+
+    @Override
+    public Space getSpaceByName(String spaceName) {
+        return spaceRepository.findById(spaceName)
+                .orElseThrow(() -> new SpaceNotFoundException("Space not found with name: " + spaceName));
     }
 }

@@ -41,7 +41,7 @@ class SpaceServiceImplTest {
             SpaceRequest spaceReq = new SpaceRequest("");
             IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class,
                     () -> spaceService.createSpace(spaceReq));
-            assertEquals("Space name cannot be blank.", thrown.getMessage());
+            assertEquals("Space name cannot be null or blank.", thrown.getMessage());
         }
 
         @Test

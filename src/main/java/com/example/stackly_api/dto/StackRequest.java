@@ -7,6 +7,8 @@ public class StackRequest {
     private String stackName;
     private HashMap<String,Object> fieldSchema;
 
+    public StackRequest() {};
+
     public StackRequest(String spaceName, String stackName, HashMap<String, Object> fieldSchema) {
         this.spaceName = spaceName;
         this.stackName = stackName;
