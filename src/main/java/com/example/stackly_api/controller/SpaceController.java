@@ -31,22 +31,31 @@ public class SpaceController {
         this.documentService = documentService;
     }
 
-    @PostMapping("/space")
-    public ResponseEntity<Space> createSpace(@RequestBody SpaceRequest spaceRequest) {
-            Space savedSpace = spaceService.createSpace(spaceRequest);
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedSpace);
-    }
-
     @GetMapping("/spaces")
     public ResponseEntity<List<Space>> getAllSpaces() {
         List<Space> spaces = spaceService.getAllSpaces();
         return ResponseEntity.ok(spaces);
     }
 
+    @GetMapping("/{space}/stacks")
+    public ResponseEntity<List<Stack>> getAllStacksPerSpace(@PathVariable("space") String spaceName) {
+        List<Stack> stacks = stackService.getAllStacksPerSpace(spaceName);
+        return ResponseEntity.ok(stacks);
+    }
+
+
+
+    //change to find document by id
     @GetMapping("/{spaceName}")
     public ResponseEntity<Space> getSpaceByName(@PathVariable String spaceName) {
         Space space = spaceService.getSpaceByName(spaceName);
         return ResponseEntity.ok(space);
+    }
+
+    @PostMapping("/space")
+    public ResponseEntity<Space> createSpace(@RequestBody SpaceRequest spaceRequest) {
+        Space savedSpace = spaceService.createSpace(spaceRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedSpace);
     }
 
     @PostMapping("/stack")

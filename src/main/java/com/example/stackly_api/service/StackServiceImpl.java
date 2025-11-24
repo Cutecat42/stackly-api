@@ -9,6 +9,8 @@ import com.example.stackly_api.model.Stack;
 import com.example.stackly_api.repository.StackRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class StackServiceImpl implements StackService{
     private final SpaceRepository spaceRepository;
@@ -46,5 +48,10 @@ public class StackServiceImpl implements StackService{
                         + stackRequest.getSpaceName()));
         Stack stack = new Stack(space, stackRequest.getStackName(), stackRequest.getFieldSchema());
         return stackRepository.save(stack);
+    }
+
+    @Override
+    public List<Stack> getAllStacksPerSpace(String spaceName) {
+        return stackRepository.findBySpace_spaceName(spaceName);
     }
 }
