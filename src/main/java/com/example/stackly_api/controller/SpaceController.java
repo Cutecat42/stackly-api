@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -43,13 +43,27 @@ public class SpaceController {
         return ResponseEntity.ok(stacks);
     }
 
+    @GetMapping("/stack/{stackName}")
+    public ResponseEntity<Stack> getStackByName(@PathVariable String stackName) {
 
+        Stack stack = stackService.getStackByStackName(stackName)
+                .orElseThrow(() -> new NoSuchElementException("Stack not found with name: " + stackName));
 
-    //change to find document by id
-    @GetMapping("/{spaceName}")
-    public ResponseEntity<Space> getSpaceByName(@PathVariable String spaceName) {
-        Space space = spaceService.getSpaceByName(spaceName);
-        return ResponseEntity.ok(space);
+        return ResponseEntity.ok(stack);
+    }
+
+    @GetMapping("/stack/{stack}/documents")
+    public ResponseEntity<List<Document>> getAllDocumentsPerStack(@PathVariable("stack") String stackName) {
+        List<Document> documents = documentService.getAllDocumentsPerStack(stackName);
+        return ResponseEntity.ok(documents);
+    }
+
+    @GetMapping("/documents/{documentNumber}")
+    public ResponseEntity<Document> getDocumentByNumber(@PathVariable Long documentNumber) {
+        Document document = documentService.getDocumentByDocumentNumber(documentNumber)
+                .orElseThrow(() -> new NoSuchElementException("Document not found with ID: " + documentNumber));
+
+        return ResponseEntity.ok(document);
     }
 
     @PostMapping("/space")

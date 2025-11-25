@@ -10,6 +10,7 @@ import com.example.stackly_api.repository.StackRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StackServiceImpl implements StackService{
@@ -53,5 +54,10 @@ public class StackServiceImpl implements StackService{
     @Override
     public List<Stack> getAllStacksPerSpace(String spaceName) {
         return stackRepository.findBySpace_spaceName(spaceName);
+    }
+
+    @Override
+    public Optional<Stack> getStackByStackName(String stackName) {
+        return stackRepository.findByStackName(stackName);
     }
 }

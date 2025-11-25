@@ -61,6 +61,9 @@ public class Document {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public long getDocumentNumber() {
+        return documentNumber;
     }
 }

@@ -1,17 +1,26 @@
-package com.example.stackly_api.service;
+package com.example.stackly_api.service.impl;
 
-import com.example.stackly_api.dto.DocumentRequest;
-import com.example.stackly_api.exception.StackNotFoundException;
-import com.example.stackly_api.model.Document;
-import com.example.stackly_api.model.Stack;
+import com.example.stackly_api.service.DocumentService;
 import com.example.stackly_api.repository.DocumentRepository;
 import com.example.stackly_api.repository.StackRepository;
+import com.example.stackly_api.model.Document;
+import com.example.stackly_api.model.Stack;
+import com.example.stackly_api.dto.DocumentRequest;
+import com.example.stackly_api.exception.StackNotFoundException;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 
 @Service
-public class DocumentServiceImpl implements DocumentService{
+public class DocumentServiceImpl implements DocumentService {
+
+    private static final Logger logger = LoggerFactory.getLogger(DocumentServiceImpl.class);
+
     private final DocumentRepository documentRepository;
     private final StackRepository stackRepository;
 
@@ -33,7 +42,7 @@ public class DocumentServiceImpl implements DocumentService{
 
         Stack stack = stackRepository.findById(documentRequest.getStackName()).
                 orElseThrow(() -> new StackNotFoundException("Stack not found with name: "
-                + documentRequest.getStackName()));
+                        + documentRequest.getStackName()));
 
         Map<String, Object> allowed = stack.getFieldSchema();
 
@@ -46,5 +55,27 @@ public class DocumentServiceImpl implements DocumentService{
 
         Document document = new Document(stack, documentRequest.getCustomData());
         return documentRepository.save(document);
+    }
+
+    @Override
+    public List<Document> getAllDocumentsPerStack(String stackName) {
+        // --- LOGGING TRACE ADDED ---
+        logger.info("--- DOCUMENT FETCH TRACE ---");
+        logger.info("Attempting to fetch documents for stack: {}", stackName);
+
+        // Execute the query using the IgnoreCase method
+        List<Document> documents = documentRepository.findByStack_stackNameIgnoreCase(stackName);
+
+        // Log the result size
+        logger.info("Query returned {} documents for stack: {}", documents.size(), stackName);
+        logger.info("--- END TRACE ---");
+        // --- LOGGING TRACE ADDED ---
+
+        return documents;
+    }
+
+    @Override
+    public Optional<Document> getDocumentByDocumentNumber(Long documentNumber) {
+        return documentRepository.findById(documentNumber);
     }
 }

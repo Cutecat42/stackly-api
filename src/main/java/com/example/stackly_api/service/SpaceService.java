@@ -8,5 +8,4 @@ import java.util.List;
 public interface SpaceService {
     Space createSpace(SpaceRequest spaceRequest);
     List<Space> getAllSpaces();
-    Space getSpaceByName(String spaceName);
 }
