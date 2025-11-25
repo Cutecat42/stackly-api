@@ -11,4 +11,5 @@ public interface StackService {
     Stack createStack(StackRequest stackRequest);
     List<Stack> getAllStacksPerSpace(String spaceName);
     Optional<Stack> getStackByStackName(String stackName);
+    List<String> getAllStackNames();
 }

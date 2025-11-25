@@ -39,7 +39,7 @@ public class StackServiceImpl implements StackService{
             throw new IllegalArgumentException("Space/Stack/FieldSchema cannot be blank.");
         }
 
-        if (stackRepository.existsById(stackRequest.getStackName())) {
+        if (stackRepository.findByStackName(stackRequest.getStackName()).isPresent()) {
             throw new StackNameConflictException("Stack already found with name: "
                     + stackRequest.getStackName());
         }
@@ -59,5 +59,10 @@ public class StackServiceImpl implements StackService{
     @Override
     public Optional<Stack> getStackByStackName(String stackName) {
         return stackRepository.findByStackName(stackName);
+    }
+
+    @Override
+    public List<String> getAllStackNames() {
+        return stackRepository.findAllStackNames();
     }
 }

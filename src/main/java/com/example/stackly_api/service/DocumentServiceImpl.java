@@ -1,4 +1,4 @@
-package com.example.stackly_api.service.impl;
+package com.example.stackly_api.service;
 
 import com.example.stackly_api.service.DocumentService;
 import com.example.stackly_api.repository.DocumentRepository;
@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 
 @Service
@@ -27,6 +29,17 @@ public class DocumentServiceImpl implements DocumentService {
     public DocumentServiceImpl(StackRepository stackRepository, DocumentRepository documentRepository) {
         this.documentRepository = documentRepository;
         this.stackRepository = stackRepository;
+    }
+
+    private boolean isValidDate(String dateStr) {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+        sdf.setLenient(false);
+        try {
+            sdf.parse(dateStr);
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
     }
 
     @Override
@@ -53,25 +66,47 @@ public class DocumentServiceImpl implements DocumentService {
             }
         }
 
+        for (Map.Entry<String, Object> entry : documentRequest.getCustomData().entrySet()) {
+            String fieldName = entry.getKey();
+            Object fieldValue = entry.getValue();
+            String expectedType = (String) allowed.get(fieldName);
+
+            if (fieldValue == null) {
+                continue;
+            }
+
+            String valueStr = fieldValue.toString();
+
+            switch (expectedType.toUpperCase()) {
+                case "DATE":
+                    if (!isValidDate(valueStr)) {
+                        throw new IllegalArgumentException(
+                                "Field '" + fieldName + "' must be a valid date in MM-dd-yyyy format. Found: " + valueStr);
+                    }
+                    break;
+                case "NUMBER":
+                    try {
+                        Double.parseDouble(valueStr);
+                    } catch (NumberFormatException e) {
+                        throw new IllegalArgumentException(
+                                "Field '" + fieldName + "' must be a valid number. Found: " + valueStr);
+                    }
+                    break;
+                case "STRING":
+                    break;
+                default:
+                    logger.warn("Unknown field type '{}' for field '{}'. Skipping type validation.", expectedType, fieldName);
+                    break;
+            }
+        }
+
         Document document = new Document(stack, documentRequest.getCustomData());
         return documentRepository.save(document);
     }
 
     @Override
     public List<Document> getAllDocumentsPerStack(String stackName) {
-        // --- LOGGING TRACE ADDED ---
-        logger.info("--- DOCUMENT FETCH TRACE ---");
-        logger.info("Attempting to fetch documents for stack: {}", stackName);
-
-        // Execute the query using the IgnoreCase method
-        List<Document> documents = documentRepository.findByStack_stackNameIgnoreCase(stackName);
-
-        // Log the result size
-        logger.info("Query returned {} documents for stack: {}", documents.size(), stackName);
-        logger.info("--- END TRACE ---");
-        // --- LOGGING TRACE ADDED ---
-
-        return documents;
+        return documentRepository.findByStack_stackNameIgnoreCase(stackName);
     }
 
     @Override

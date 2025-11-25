@@ -52,6 +52,12 @@ public class SpaceController {
         return ResponseEntity.ok(stack);
     }
 
+    @GetMapping("/stacks")
+    public ResponseEntity<List<String>> getAllStackNamesForValidation() {
+        List<String> stackNames = stackService.getAllStackNames();
+        return ResponseEntity.ok(stackNames);
+    }
+
     @GetMapping("/stack/{stack}/documents")
     public ResponseEntity<List<Document>> getAllDocumentsPerStack(@PathVariable("stack") String stackName) {
         List<Document> documents = documentService.getAllDocumentsPerStack(stackName);
