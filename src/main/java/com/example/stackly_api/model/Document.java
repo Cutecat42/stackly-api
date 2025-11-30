@@ -56,6 +56,12 @@ public class Document {
     private String fileName;
 
     @Column(
+            name = "system_file_name",
+            unique=true
+    )
+    private String systemFileName;
+
+    @Column(
             name = "file_size"
     )
     private long fileSize;
@@ -73,25 +79,12 @@ public class Document {
 
     public Document() {};
 
-//    public Document(Stack stack, HashMap<String, Object> customData) {
-//    this.stack = stack;
-//    this.customData = customData;
-//    }
-
-//    public Document(String filePath,
-//                    String fileName,
-//                    Long fileSize) {
-//        this.space = null;
-//        this.stack = null;
-//        this.customData = null;
-//        this.filePath = filePath;
-//        this.fileName = fileName;
-//        this.fileSize = fileSize;
-//        this.inQueue = true;
-//    }
-
     public String getStackName() {
         return stack != null ? stack.getStackName() : null;
+    }
+
+    public String getSpaceName() {
+        return space != null ? space.getSpaceName() : null;
     }
 
     public String getCustomData() {
@@ -113,6 +106,10 @@ public class Document {
 
     public String getFileName() {
         return fileName;
+    }
+
+    public String getSystemFileName() {
+        return systemFileName;
     }
 
     public long getFileSize() {
@@ -145,5 +142,21 @@ public class Document {
 
     public void setInQueue(Boolean inQueue) {
         this.inQueue = inQueue;
+    }
+
+    public void setStack(Stack stack) {
+        this.stack = stack;
+    }
+
+    public void setSpace(Space space) {
+        this.space = space;
+    }
+
+    public void setCustomData(HashMap<String, Object> customData) {
+        this.customData = customData;
+    }
+
+    public void setSystemFileName(String systemFileName) {
+        this.systemFileName = systemFileName;
     }
 }

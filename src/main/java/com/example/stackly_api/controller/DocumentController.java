@@ -3,11 +3,13 @@ package com.example.stackly_api.controller;
 import com.example.stackly_api.dto.DocumentRequest;
 import com.example.stackly_api.model.Document;
 import com.example.stackly_api.service.DocumentService;
+import com.example.stackly_api.service.FileStorageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -15,9 +17,11 @@ import java.util.NoSuchElementException;
 @CrossOrigin(origins = "http://localhost:3000")
 public class DocumentController {
     private final DocumentService documentService;
+    private final FileStorageService fileStorageService;
 
-    public DocumentController(DocumentService documentService) {
+    public DocumentController(DocumentService documentService, FileStorageService fileStorageService) {
         this.documentService = documentService;
+        this.fileStorageService = fileStorageService;
     }
 
     @GetMapping("/stack/{stack}/documents")
@@ -47,5 +51,13 @@ public class DocumentController {
     ) {
         Document savedDocument = documentService.saveDocument(file, documentName);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedDocument);
+    }
+
+    @PutMapping("/document/assign")
+    public ResponseEntity<Document> assignDocumentToSpace(@RequestBody DocumentRequest documentRequest) throws IOException, IOException {
+
+        Document assignedDocument = fileStorageService.saveDocumentToSpace(documentRequest);
+
+        return new ResponseEntity<>(assignedDocument, HttpStatus.OK);
     }
 }

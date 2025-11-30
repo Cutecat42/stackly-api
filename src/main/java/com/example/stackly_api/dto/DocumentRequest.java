@@ -13,10 +13,15 @@ public class DocumentRequest {
 
     public DocumentRequest() {};
 
-//    public DocumentRequest(String stackName, HashMap<String,Object> customData) {
-//        this.stackName = stackName;
-//        this.customData = customData;
-//    };
+    public DocumentRequest(String spaceName,
+                           String stackName,
+                           String fileName,
+                           HashMap<String,Object> customData) {
+        this.spaceName = spaceName;
+        this.stackName = stackName;
+        this.fileName = fileName;
+        this.customData = customData;
+    };
 
     public DocumentRequest(HashMap<String, Object> customData,
                     String filePath,
@@ -50,4 +55,6 @@ public class DocumentRequest {
     public Long getFileSize() {
         return fileSize;
     }
+
+    public String getSpaceName() { return spaceName; }
 }
