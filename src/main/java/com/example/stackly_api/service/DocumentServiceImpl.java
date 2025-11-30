@@ -31,16 +31,16 @@ public class DocumentServiceImpl implements DocumentService {
         this.fileStorageService = fileStorageService;
     }
 
-    private boolean isValidDate(String dateStr) {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
-        sdf.setLenient(false);
-        try {
-            sdf.parse(dateStr);
-            return true;
-        } catch (ParseException e) {
-            return false;
-        }
-    }
+//    private boolean isValidDate(String dateStr) {
+//        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+//        sdf.setLenient(false);
+//        try {
+//            sdf.parse(dateStr);
+//            return true;
+//        } catch (ParseException e) {
+//            return false;
+//        }
+//    }
 
 //    @Override
 //    public Document createDocument(DocumentRequest documentRequest) {
@@ -126,14 +126,11 @@ public class DocumentServiceImpl implements DocumentService {
         }
 
         try {
-            // 1. Save the actual file content to the disk and get the Document metadata back
             Document document = fileStorageService.saveDocumentToQueue(file, documentName);
 
-            // 2. Save the document metadata (which includes the file path) to the database
             return documentRepository.save(document);
 
         } catch (IOException e) {
-            // Handle error during file saving
             throw new RuntimeException("Failed to store file: " + file.getOriginalFilename(), e);
         }
     }

@@ -8,5 +8,5 @@ import java.io.IOException;
 
 public interface FileStorageService {
     Document saveDocumentToQueue(MultipartFile file, String documentName) throws IOException;
-    //Document saveDocumentToSpace(DocumentRequest documentRequest);
+    Document saveDocumentToSpace(DocumentRequest documentRequest) throws IOException;
 }
