@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface DocumentRepository extends JpaRepository<Document, Long> {
     List<Document> findByStack_stackNameIgnoreCase(String stackName);
+    List<Document> findByinQueueTrue();
 }

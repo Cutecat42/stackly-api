@@ -12,6 +12,7 @@ import com.example.stackly_api.service.StackService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -72,6 +73,12 @@ public class SpaceController {
         return ResponseEntity.ok(document);
     }
 
+    @GetMapping("/inQueue")
+    public ResponseEntity<List<Document>> getAllDocumentsInQueue(@RequestBody DocumentRequest documentRequest) {
+        List<Document> documents = documentService.getAllDocumentsInQueue();
+        return ResponseEntity.ok(documents);
+    }
+
     @PostMapping("/space")
     public ResponseEntity<Space> createSpace(@RequestBody SpaceRequest spaceRequest) {
         Space savedSpace = spaceService.createSpace(spaceRequest);
@@ -84,10 +91,19 @@ public class SpaceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedStack);
     }
 
-    @PostMapping("/document")
-    public ResponseEntity<?> createDocument(@RequestBody DocumentRequest documentRequest) {
+//    @PostMapping("/document")
+//    public ResponseEntity<?> createDocument(@RequestBody DocumentRequest documentRequest) {
+//
+//        Document savedDocument = documentService.createDocument(documentRequest);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(savedDocument);
+//    }
 
-        Document savedDocument = documentService.createDocument(documentRequest);
+    @PostMapping("/document/upload")
+    public ResponseEntity<Document> uploadDocument(
+            @RequestPart("file") MultipartFile file,
+            @RequestParam("documentName") String documentName
+    ) {
+        Document savedDocument = documentService.saveDocument(file, documentName);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedDocument);
     }
 

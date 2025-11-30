@@ -33,9 +33,37 @@ public class Document {
     @ManyToOne
     @JoinColumn(
             name = "stack_name",
-            nullable = false
+            referencedColumnName = "stack_name"
     )
     private Stack stack;
+
+    @ManyToOne
+    @JoinColumn(
+            name = "space_name",
+            referencedColumnName = "space_name"
+    )
+    private Space space;
+
+    @Column(
+            name = "file_path",
+            unique = true
+    )
+    private String filePath;
+
+    @Column(
+            name = "file_name"
+    )
+    private String fileName;
+
+    @Column(
+            name = "file_size"
+    )
+    private long fileSize;
+
+    @Column(
+            name = "in_queue"
+    )
+    private boolean inQueue;
 
     @Type(type = "jsonb")
     @Column(
@@ -45,13 +73,25 @@ public class Document {
 
     public Document() {};
 
-    public Document(Stack stack, HashMap<String, Object> customData) {
-    this.stack = stack;
-    this.customData = customData;
-    }
+//    public Document(Stack stack, HashMap<String, Object> customData) {
+//    this.stack = stack;
+//    this.customData = customData;
+//    }
+
+//    public Document(String filePath,
+//                    String fileName,
+//                    Long fileSize) {
+//        this.space = null;
+//        this.stack = null;
+//        this.customData = null;
+//        this.filePath = filePath;
+//        this.fileName = fileName;
+//        this.fileSize = fileSize;
+//        this.inQueue = true;
+//    }
 
     public String getStackName() {
-        return stack.getStackName();
+        return stack != null ? stack.getStackName() : null;
     }
 
     public String getCustomData() {
@@ -65,5 +105,45 @@ public class Document {
 
     public long getDocumentNumber() {
         return documentNumber;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public long getFileSize() {
+        return fileSize;
+    }
+
+    public boolean isInQueue() {
+        return inQueue;
+    }
+
+    public Space getSpace() {
+        return space;
+    }
+
+    public Stack getStack() {
+        return stack;
+    }
+
+    public void setFileName(String name) {
+        this.fileName = name;
+    }
+
+    public void setFilePath(String path) {
+        this.filePath = path;
+    }
+
+    public void setFileSize(Long size) {
+        this.fileSize = size;
+    }
+
+    public void setInQueue(Boolean inQueue) {
+        this.inQueue = inQueue;
     }
 }

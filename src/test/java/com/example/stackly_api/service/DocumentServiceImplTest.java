@@ -158,7 +158,7 @@ class DocumentServiceImplTest {
             Space simpleSpace = new Space("HR");
             Stack mockStack = new Stack(simpleSpace, stackName, allowedSchema);
 
-            Document expectedDocument = new Document(mockStack, customData);
+            //Document expectedDocument = new Document(mockStack, customData);
 
             when(stackRepository.findById(stackName)).thenReturn(Optional.of(mockStack));
             when(documentRepository.save(any(Document.class))).thenReturn(expectedDocument);
